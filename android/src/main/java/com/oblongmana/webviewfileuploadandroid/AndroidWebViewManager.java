@@ -1,8 +1,10 @@
 package com.oblongmana.webviewfileuploadandroid;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.Context;
+import android.os.Build;
 import android.os.Environment;
 import android.webkit.URLUtil;
 import android.widget.Toast;
@@ -12,11 +14,12 @@ import android.util.Log;
 import android.webkit.DownloadListener;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
+import android.webkit.PermissionRequest;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 
-
+import com.facebook.react.bridge.UiThreadUtil;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.views.webview.ReactWebViewManager;
@@ -81,6 +84,20 @@ public class AndroidWebViewManager extends ReactWebViewManager {
                 } catch (Exception e) {
                     Log.d("customwebview", e.toString());
                 }
+            }
+
+            @Override
+            @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+            public void onPermissionRequest(final PermissionRequest request) {
+                UiThreadUtil.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String[] permissionsRequested = new String[1];
+                        permissionsRequested[0] = PermissionRequest.RESOURCE_VIDEO_CAPTURE;
+
+                        request.grant(permissionsRequested);
+                    }
+                });
             }
         });
         view.setDownloadListener(new DownloadListener() {
