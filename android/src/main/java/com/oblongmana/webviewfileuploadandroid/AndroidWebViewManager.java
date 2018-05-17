@@ -27,6 +27,8 @@ public class AndroidWebViewManager extends ReactWebViewManager {
     @Override
     protected WebView createViewInstance(ThemedReactContext reactContext) {
         WebView view = super.createViewInstance(reactContext);
+        view.getSettings().setTextZoom(100);
+
         //Now do our own setWebChromeClient, patching in file chooser support
         final AndroidWebViewModule module = this.aPackage.getModule();
         view.setWebChromeClient(new WebChromeClient(){
